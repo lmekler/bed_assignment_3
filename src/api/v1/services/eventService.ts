@@ -66,3 +66,12 @@ export const updateEventService = async (id: string, eventData: Partial<Pick<
     events[index].updatedAt = new Date().toISOString();
     return structuredClone(events[index]);
 };
+
+export const deleteEventService = async (id: string): Promise<boolean> =>
+{
+    const index = events.findIndex(event => event.id === id);
+    if (index === -1) return false;
+
+    events.splice(index, 1)
+    return true;
+}

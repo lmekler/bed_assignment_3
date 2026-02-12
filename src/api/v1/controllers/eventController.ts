@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Event } from "../models/eventModel";
 import { createEventService, getAllEventsService,
-    getEventService, updateEventService } from "../services/eventService";
+    getEventService, updateEventService,
+    deleteEventService } from "../services/eventService";
 
 export const createEvent = async (req: Request, 
     res: Response, next: NextFunction): Promise<void> => 
@@ -139,5 +140,25 @@ export const updateEvent = async (req: Request,
     catch (error: unknown) 
     {
         next(error);
+    }
+};
+
+export const deleteEvent = async (req: Request, res: Response): Promise<void> =>
+{
+    const id: string = req.params.id.toString();
+
+    if (await deleteEventService(id))
+    {
+        res.status(HTTP_STATUS.OK).json(
+        {
+            message: "Event deleted"
+        });
+    }
+    else
+    {
+        res.status(HTTP_STATUS.NOT_FOUND).json(
+        {
+            message: "Event not found"
+        });
     }
 };
