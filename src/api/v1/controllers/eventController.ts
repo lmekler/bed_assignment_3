@@ -1,13 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { Event } from "../models/eventModel";
-import { createEventService,} from "../services/eventService";
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
+import { Event } from "../models/eventModel";
+import { createEventService, getAllEventsService} from "../services/eventService";
 
-export const createEvent = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> => 
+export const createEvent = async (req: Request, 
+    res: Response, next: NextFunction): Promise<void> => 
 {
     try 
     {
@@ -40,6 +37,24 @@ export const createEvent = async (
         });
     }
     catch (error: unknown) 
+    {
+        next(error);
+    }
+};
+
+export const getAllEvents = async (req: Request, res: Response, next: NextFunction): Promise<void> => 
+{
+    try
+    {
+        const events = await getAllEventsService();
+        res.status(HTTP_STATUS.OK).json(
+        {
+            message: "Events retrieved",
+            count: events.length,
+            data: events
+        });
+    }
+    catch (error: unknown)
     {
         next(error);
     }

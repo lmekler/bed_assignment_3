@@ -24,9 +24,15 @@ export const createEventService = async (
         registrationCount: eventData.registrationCount || 0,
         status: eventData.status || "active",
         category: eventData.category || "general",
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
 
     events.push(newEvent);
     return newEvent;
+};
+
+export const getAllEventsService = async (): Promise<Event[]> => 
+{
+    return structuredClone(events);
 };
