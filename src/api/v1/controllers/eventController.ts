@@ -11,8 +11,25 @@ export const createEvent = async (
 {
     try 
     {
-        const { name, date, capacity } = req.body;
-        const event: Event = { name, date, capacity };
+        const 
+        { 
+            name, 
+            date, 
+            capacity, 
+            registrationCount, 
+            status, 
+            category
+        } = req.body;
+
+        const event: Event = 
+        { 
+            name, 
+            date, 
+            capacity, 
+            registrationCount, 
+            status, 
+            category
+        };
 
         const eventResponse: Event = await createEventService(event);
 

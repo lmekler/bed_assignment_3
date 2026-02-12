@@ -1,12 +1,13 @@
 import express, { Express } from "express";
+import eventRouter from "./api/v1/routes/eventRoutes";
 
 // Initialize Express application
 const app: Express = express();
 
-// Define a route
-app.get("/", (req, res) => {
-    res.send("Hello, World!");
-});
+app.use(express.json());
+
+// Route handler for items
+app.use("/api/v1", eventRouter);
 
 app.get("/api/v1/health", (req, res) => {
     res.json({
