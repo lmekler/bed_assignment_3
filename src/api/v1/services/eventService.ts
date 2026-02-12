@@ -36,3 +36,9 @@ export const getAllEventsService = async (): Promise<Event[]> =>
 {
     return structuredClone(events);
 };
+
+export const getEventService = async (id: string): Promise<Event | undefined> =>
+{
+    let event: Event | undefined = events.find(event => event.id === id);
+    return structuredClone(event);
+}

@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { validateRequest } from "../middleware/validate";
 import { postSchemas } from "../validation/postSchemas";
-import { createEvent, getAllEvents } from "../controllers/eventController"
+import { createEvent, getAllEvents, getEvent } from "../controllers/eventController"
 
 
 // getAllEvents, getEvent, updateEvent, deleteEvent
@@ -9,9 +9,8 @@ import { createEvent, getAllEvents } from "../controllers/eventController"
 const eventRouter: Router = express.Router();
 
 eventRouter.post("/events", validateRequest(postSchemas.create), createEvent);
-
 eventRouter.get("/events", getAllEvents);
-// eventRouter.get("/events/:id", getEvent);
+eventRouter.get("/events/:id", getEvent);
 // eventRouter.put("/events/:id", updateEvent);
 // eventRouter.delete("/events/:id", deleteEvent);
 
