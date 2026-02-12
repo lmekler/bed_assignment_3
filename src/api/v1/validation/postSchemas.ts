@@ -1,4 +1,4 @@
-import Joi, { number, ObjectSchema } from "joi";
+import Joi from "joi";
 
 // Post operation schemas organized by request part
 export const postSchemas = 
