@@ -42,3 +42,27 @@ export const getEventService = async (id: string): Promise<Event | undefined> =>
     let event: Event | undefined = events.find(event => event.id === id);
     return structuredClone(event);
 }
+
+export const updateEventService = async (id: string, eventData: Partial<Pick<
+    Event, "registrationCount" | "status">> ): Promise<Event | undefined> =>
+{
+    const index = events.findIndex(event => event.id === id);
+    if (index === -1) return undefined;
+
+    if (eventData.registrationCount !== undefined) 
+    {
+        if (eventData.registrationCount > events[index].capacity)
+        {
+            throw new Error("Registration count exceeds event capacity");
+        }
+        events[index].registrationCount = eventData.registrationCount;
+    }
+
+    if (eventData.status !== undefined) 
+    {
+        events[index].status = eventData.status;
+    }
+
+    events[index].updatedAt = new Date().toISOString();
+    return structuredClone(events[index]);
+};
