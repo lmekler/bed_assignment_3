@@ -55,12 +55,16 @@ export const getAllEventsService = async (): Promise<Event[]> =>
             const data = doc.data();
             return {
                 id: doc.id,
-                ...data,
-                createdAt: data.createdAt?.toDate() || new Date(),
-                updatedAt: data.updatedAt?.toDate() || new Date(),
+                name: data.name,
+                date: data.date.toDate().toISOString(),
+                capacity: data.capacity,
+                registrationCount: data.registrationCount,
+                status: data.status,
+                category: data.category,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt
             } as Event;
         });
-
         return events;
     } 
     catch (error: unknown)
@@ -85,9 +89,14 @@ export const getEventService = async (id: string): Promise<Event> =>
 
         const event: Event = {
             id: doc.id,
-            ...data,
-            createdAt: data?.createdAt?.toDate() || new Date(),
-            updatedAt: data?.updatedAt?.toDate() || new Date(),
+            name: data?.name,
+            date: data?.date.toDate().toISOString(),
+            capacity: data?.capacity,
+            registrationCount: data?.registrationCount,
+            status: data?.status,
+            category: data?.category,
+            createdAt: data?.createdAt,
+            updatedAt: data?.updatedAt
         } as Event;
 
         return event;
