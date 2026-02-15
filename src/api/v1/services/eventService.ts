@@ -70,7 +70,7 @@ export const getAllEventsService = async (): Promise<Event[]> =>
     }
 };
 
-export const getEventService = async (id: string): Promise<Event | undefined> =>
+export const getEventService = async (id: string): Promise<Event> =>
 {
     try 
     {
@@ -101,7 +101,7 @@ export const getEventService = async (id: string): Promise<Event | undefined> =>
 }
 
 export const updateEventService = async (id: string, eventData: Partial<Pick<
-    Event, "registrationCount" | "status">> ): Promise<Event | undefined> =>
+    Event, "registrationCount" | "status">> ): Promise<Event> =>
 {
     try 
     {

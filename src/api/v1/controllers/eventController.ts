@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Event } from "../models/eventModel";
+import { successResponse } from "../models/responseModel";
 import { createEventService, getAllEventsService,
     getEventService, updateEventService,
     deleteEventService } from "../services/eventService";
@@ -32,11 +33,10 @@ export const createEvent = async (req: Request,
 
         const eventResponse: Event = await createEventService(event);
 
-        res.status(HTTP_STATUS.CREATED).json(
-        {
-            message: "Event created",
-            data: eventResponse
-        });
+        res.status(HTTP_STATUS.CREATED).json
+        (
+            successResponse(eventResponse, "Event created successfully")
+        );
     }
     catch (error: unknown) 
     {
@@ -44,17 +44,16 @@ export const createEvent = async (req: Request,
     }
 };
 
-export const getAllEvents = async (req: Request, res: Response, next: NextFunction): Promise<void> => 
+export const getAllEvents = async (req: Request, 
+    res: Response, next: NextFunction): Promise<void> => 
 {
     try
     {
-        const events = await getAllEventsService();
-        res.status(HTTP_STATUS.OK).json(
-        {
-            message: "Events retrieved",
-            count: events.length,
-            data: events
-        });
+        const events: Event[] = await getAllEventsService();
+        res.status(HTTP_STATUS.OK).json
+        (
+            successResponse(events, "Events retrieved successfully")
+        );
     }
     catch (error: unknown)
     {
@@ -62,32 +61,29 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-export const getEvent = async (req: Request, res: Response): Promise<void> =>
+export const getEvent = async (req: Request, 
+    res: Response, next: NextFunction): Promise<void> =>
 {
-    const id: string = req.params.id.toString();
-    const event: Event | undefined = await getEventService(id);
-
-    if (event) 
+    try 
     {
-        res.status(HTTP_STATUS.OK).json(
-        {
-            message: "Event retrieved",
-            data: event
-        });
-    }
-    else
+        const id: string = req.params.id.toString();
+        const event: Event = await getEventService(id);
+        
+        res.status(HTTP_STATUS.OK).json
+        (
+            successResponse(event, "Event retrieved successfully")
+        );
+    } 
+    catch (error: unknown) 
     {
-        res.status(HTTP_STATUS.NOT_FOUND).json(
-        {
-            message: "Event not found"
-        });
+        next(error);
     }
 };
 
 export const updateEvent = async (req: Request, 
     res: Response, next: NextFunction): Promise<void> =>
 {
-    try
+    try 
     {
         const id: string = req.params.id.toString();
         const {
@@ -97,45 +93,18 @@ export const updateEvent = async (req: Request,
             registrationCount?: number;
             status?: string;
         } = req.body;
-
+        
         const updateData: Partial<Pick<Event, "registrationCount" | "status">> = 
         {
             registrationCount: registrationCount,
             status: status
         };
-
-        try
-        {
-            const updatedEvent: Event | undefined = await updateEventService(id, updateData);
-
-             if (!updatedEvent) 
-            {
-                res.status(HTTP_STATUS.NOT_FOUND).json(
-                {
-                    message: "Event not found",
-                });
-            } 
-            else 
-            {
-                res.status(HTTP_STATUS.OK).json(
-                {
-                    message: "Event updated", 
-                    data: updatedEvent
-                });
-            }
-        }
-        catch (error: any)
-        {
-            if (error.message === "Registration count exceeds event capacity")
-            {
-                res.status(HTTP_STATUS.BAD_REQUEST).json(
-                {
-                    error: error.message
-                });
-                return;
-            }
-            throw error;
-        }
+        
+        const updatedEvent: Event = await updateEventService(id, updateData);
+        res.status(HTTP_STATUS.OK).json
+        (
+            successResponse(updatedEvent, "Event updated successfully")
+        );
     } 
     catch (error: unknown) 
     {
@@ -143,22 +112,20 @@ export const updateEvent = async (req: Request,
     }
 };
 
-export const deleteEvent = async (req: Request, res: Response): Promise<void> =>
+export const deleteEvent = async (req: Request, 
+    res: Response, next: NextFunction): Promise<void> =>
 {
-    const id: string = req.params.id.toString();
-
-    if (await deleteEventService(id))
+    try 
     {
-        res.status(HTTP_STATUS.OK).json(
-        {
-            message: "Event deleted"
-        });
-    }
-    else
+        const id: string = req.params.id.toString();
+        await deleteEventService(id);
+        res.status(HTTP_STATUS.OK).json
+        (
+            successResponse(null, "Event deleted successfully")
+        );
+    } 
+    catch (error: unknown) 
     {
-        res.status(HTTP_STATUS.NOT_FOUND).json(
-        {
-            message: "Event not found"
-        });
+        next(error);
     }
 };
