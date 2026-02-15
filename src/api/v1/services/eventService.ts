@@ -1,7 +1,10 @@
 import { Event } from '../models/eventModel';
+import { createDocument, getDocuments, 
+    getDocumentById, updateDocument,
+    deleteDocument } from "../repositories/firestoreRepository";
 
-// list of stored events
-const events: Event[] = [];
+// name of the Firestore collection for events
+const COLLECTION = "events";
 
 export const createEventService = async (
     eventData: {
@@ -13,65 +16,129 @@ export const createEventService = async (
         category?: string;
     }): Promise<Event> => 
 {
-    // create a new event and automatically assign values to 
-    // undefined fields and current timestamp to new events
-    const newEvent: Event =
-    {
-        id: `evt_${events.length+1}`,
-        name: eventData.name,
-        date: eventData.date,
-        capacity: eventData.capacity,
-        registrationCount: eventData.registrationCount || 0,
-        status: eventData.status || "active",
-        category: eventData.category || "general",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
 
-    events.push(newEvent);
-    return newEvent;
+    try 
+    {
+        // create a new event and automatically assign values to 
+        // undefined fields and current timestamp to new events
+        const newEvent: Event =
+        {
+            name: eventData.name,
+            date: eventData.date,
+            capacity: eventData.capacity,
+            registrationCount: eventData.registrationCount || 0,
+            status: eventData.status || "active",
+            category: eventData.category || "general",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        const id = await createDocument<Event>(COLLECTION, newEvent);
+
+        return { id, ...newEvent } as Event;
+    } 
+    catch (error: unknown) 
+    {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to create event: ${errorMessage}`);
+    }
 };
 
 export const getAllEventsService = async (): Promise<Event[]> => 
 {
-    return structuredClone(events);
+    try 
+    {
+        const snapshot = await getDocuments(COLLECTION);
+
+        const events = snapshot.docs.map((doc) => 
+        {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+                updatedAt: data.updatedAt?.toDate() || new Date(),
+            } as Event;
+        });
+
+        return events;
+    } 
+    catch (error: unknown)
+    {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to retrieve all events: ${errorMessage}`);
+    }
 };
 
 export const getEventService = async (id: string): Promise<Event | undefined> =>
 {
-    let event: Event | undefined = events.find(event => event.id === id);
-    return structuredClone(event);
+    try 
+    {
+        const doc = await getDocumentById(COLLECTION, id);
+
+        if (!doc) 
+        {
+            throw new Error(`Event with ID ${id} not found`);
+        }
+
+        const data = doc.data();
+
+        const event: Event = {
+            id: doc.id,
+            ...data,
+            createdAt: data?.createdAt?.toDate() || new Date(),
+            updatedAt: data?.updatedAt?.toDate() || new Date(),
+        } as Event;
+
+        return event;
+    } 
+    catch (error: unknown) 
+    {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to retrieve the event: ${errorMessage}`);
+    }
+
 }
 
 export const updateEventService = async (id: string, eventData: Partial<Pick<
     Event, "registrationCount" | "status">> ): Promise<Event | undefined> =>
 {
-    const index = events.findIndex(event => event.id === id);
-    if (index === -1) return undefined;
-
-    if (eventData.registrationCount !== undefined) 
+    try 
     {
-        if (eventData.registrationCount > events[index].capacity)
-        {
-            throw new Error("Registration count exceeds event capacity");
-        }
-        events[index].registrationCount = eventData.registrationCount;
-    }
+        const updateData = {
+            ...eventData,
+            updatedAt: new Date().toISOString(),
+        };
+        
+        await updateDocument<Event>(COLLECTION, id, updateData);
 
-    if (eventData.status !== undefined) 
+        // Return the updated item
+        const updatedEvent = await getEventService(id);
+        return updatedEvent;
+    } 
+    catch (error: unknown)
     {
-        events[index].status = eventData.status;
+        const errorMessage =error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to update event ${id}: ${errorMessage}`);
     }
-
-    events[index].updatedAt = new Date().toISOString();
-    return structuredClone(events[index]);
 };
 
-export const deleteEventService = async (id: string): Promise<boolean> =>
+export const deleteEventService = async (id: string): Promise<void> =>
 {
-    const index = events.findIndex(event => event.id === id);
-    if (index === -1) return false;
+    try 
+    {
+        // Check if item exists before deleting
+        const doc = await getDocumentById(COLLECTION, id);
+        if (!doc) 
+        {
+            throw new Error(`Event with ID ${id} not found`);
+        }
 
-    events.splice(index, 1)
-    return true;
+        await deleteDocument(COLLECTION, id);
+    } 
+    catch (error: unknown)
+    {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Failed to delete the event: ${errorMessage}`);
+    }
 }
