@@ -114,8 +114,29 @@ export const updateEventService = async (id: string, eventData: Partial<Pick<
 {
     try 
     {
+        // Remove undefined fields from data passed to update document
+        // function, and validate registrationCount against event capacity
+        const event = await getEventService(id);
+        const data: Partial<Pick<Event, "registrationCount" | "status">> = {};
+
+        if (eventData.registrationCount !== undefined) 
+        {
+            // Check that registrationCount does not exceed capacity
+            if (eventData.registrationCount > event.capacity) 
+            {
+                throw new Error(`registrationCount (${eventData.registrationCount}) `
+                    +`cannot exceed event capacity (${event.capacity})`);
+            }
+            data.registrationCount = eventData.registrationCount;
+        }
+
+        if (eventData.status !== undefined) 
+        {
+            data.status = eventData.status;
+        }
+
         const updateData = {
-            ...eventData,
+            ...data,
             updatedAt: new Date().toISOString(),
         };
         

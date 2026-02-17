@@ -4,9 +4,6 @@ import { postSchemas } from "../validation/postSchemas";
 import { createEvent, getAllEvents, getEvent,
     updateEvent, deleteEvent } from "../controllers/eventController"
 
-
-// getAllEvents, getEvent, updateEvent, deleteEvent
-
 const eventRouter: Router = express.Router();
 
 eventRouter.post("/events", validateRequest(postSchemas.create), createEvent);
