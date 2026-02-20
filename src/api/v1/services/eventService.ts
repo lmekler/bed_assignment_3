@@ -158,7 +158,7 @@ export const deleteEventService = async (id: string): Promise<void> =>
     try 
     {
         // Check if item exists before deleting
-        const doc = await getDocumentById(COLLECTION, id);
+        const doc = await getEventService(id);
         if (!doc) 
         {
             throw new Error(`Event with ID ${id} not found`);
