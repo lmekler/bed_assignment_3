@@ -52,7 +52,7 @@ export const getAllEvents = async (req: Request,
         const events: Event[] = await getAllEventsService();
         res.status(HTTP_STATUS.OK).json
         (
-            successResponse(events, "Events retrieved successfully")
+            successResponse(events, "Events retrieved successfully", events.length)
         );
     }
     catch (error: unknown)
