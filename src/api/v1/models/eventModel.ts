@@ -1,5 +1,14 @@
 /**
  * Represents an event in an event planning system
+ * @param id - Unique identifier
+ * @param name - Name if event
+ * @param date - Date of the event
+ * @param capacity - Amount of people the event can hold
+ * @param registrationCount - Amount of people registered
+ * @param status - Whether the event is active, cancelled, or completed
+ * @param category - Optional category to describe the event type
+ * @param createdAt - Timestamp for when the event was created
+ * @param updatedAt - Timestamp for last time the event was updated
  */
 export interface Event 
 {

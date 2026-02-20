@@ -7,7 +7,7 @@ const app: Express = express();
 
 app.use(express.json());
 
-// Route handler for items
+// Route handler for events
 app.use("/api/v1", eventRouter);
 
 // Integrate Morgan for HTTP request logging.
