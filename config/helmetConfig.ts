@@ -1,7 +1,7 @@
 import helmet from "helmet";
 
 export const getHelmetConfig = () => {
-    const isDevelopment = process.env.NODE_ENV === "development";
+    const isDevelopment = process.env.NODE_ENV === "production";
 
     // Base configuration for APIs
     const baseConfig = {
