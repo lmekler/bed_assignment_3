@@ -1,6 +1,11 @@
 import express, { Express } from "express";
-import eventRouter from "./api/v1/routes/eventRoutes";
 import morgan from "morgan";
+import dotenv from "dotenv";
+
+// Load environment variables BEFORE your internal imports!
+dotenv.config();
+
+import eventRouter from "./api/v1/routes/eventRoutes";
 
 // Initialize Express application
 const app: Express = express();
