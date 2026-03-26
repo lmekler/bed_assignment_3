@@ -1,5 +1,5 @@
 export const getCorsOptions = () => {
-    const isDevelopment = process.env.NODE_ENV === "production";
+    const isDevelopment = process.env.NODE_ENV === "development";
 
     if (isDevelopment) {
         // Allow all origins in development for easy testing
