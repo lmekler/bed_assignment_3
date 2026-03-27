@@ -28,6 +28,8 @@
     "@types/joi": "^17.2.2",
     "@types/node": "^25.2.3",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^30.2.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
@@ -43,6 +45,8 @@
     "firebase-admin": "^13.6.1",
     "helmet": "^8.1.0",
     "joi": "^18.0.2",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

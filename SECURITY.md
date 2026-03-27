@@ -70,7 +70,7 @@ allowedHeaders: ["Content-Type", "Authorization"]
 1. **origin: true (in development)**   
 Enabled in development to allow requests from any origin, for ease of testing.
 
-2. **origin: process.env.ALLOWED_ORIGINS?.split(",") || [], (in production)**  
+2. **origin: process.env.ALLOWED_ORIGINS?.split(",") || [] (in production)**  
 Restricted in production to limit access to only specific, trusted origins.
 
 3. **credentials: true**  
