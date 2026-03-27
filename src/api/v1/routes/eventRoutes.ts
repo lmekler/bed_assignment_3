@@ -17,53 +17,20 @@ const eventRouter: Router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - date
- *               - capacity
- *             properties:
- *               name:
- *                 type: string
- *                 minLength: 3
- *                 example: "Graduation"
- *               date:
- *                 type: string
- *                 format: date-time
- *                 description: Must be a future date (greater than the current date and time)
- *                 example: "2026-05-01T10:00:00Z"
- *               capacity:
- *                 type: integer
- *                 minimum: 5
- *                 description: Must be a whole number greater than or equal to 5
- *               registrationCount:
- *                 type: integer
- *                 default: 0
- *                 description: Must be a whole number that is less than or equal to the capacity
- *               status:
- *                 type: string
- *                 enum: ["active", "cancelled", "completed"]
- *                 default: "active"
- *               category:
- *                 type: string
- *                 enum: ["conference", "workshop", "meetup", "seminar", "general"]
- *               createdAt:
- *                 type: string
- *                 format: date-time
- *                 example: "2026-05-01T10:00:00Z"
+ *             $ref: '#/components/schemas/Event'
  *     responses:
  *       '201':
  *         description: Event created successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Event'
+ *               $ref: '#/components/schemas/Event'
  *       '400':
  *         description: Invalid input data
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Event'
+ *               $ref: '#/components/schemas/Error'
  */
 eventRouter.post("/events", validateRequest(postSchemas.create), createEvent);
 
@@ -89,8 +56,8 @@ eventRouter.post("/events", validateRequest(postSchemas.create), createEvent);
  *                   description: Number of events returned in the response
  *                 data:
  *                   type: array
- *                   items: 
- *                     $ref: '#/components/validations/Event'
+ *                   items:
+ *                     $ref: '#/components/schemas/Event'
  *                 message:
  *                   type: string
  *                   example: "Events retrieved successfully"
@@ -99,7 +66,7 @@ eventRouter.get("/events", getAllEvents);
 
 /**
  * @openapi
- * /events/:id:
+ * /events/{id}:
  *   get:
  *     summary: Retrieve an event by ID
  *     tags: [Events]
@@ -121,7 +88,7 @@ eventRouter.get("/events", getAllEvents);
  *                   type: string
  *                   example: "success"
  *                 data:
- *                   $ref: '#/components/validations/Event'
+ *                   $ref: '#/components/schemas/Event'
  *                 message:
  *                   type: string
  *                   example: "Event retrieved successfully"
@@ -130,7 +97,7 @@ eventRouter.get("/events/:id", getEvent);
 
 /**
  * @openapi
- * /events/:id:
+ * /events/{id}:
  *   put:
  *     summary: Update an existing event
  *     tags: [Events]
@@ -168,7 +135,7 @@ eventRouter.get("/events/:id", getEvent);
  *                   type: string
  *                   example: "success"
  *                 data:
- *                   $ref: '#/components/validations/Event'
+ *                   $ref: '#/components/schemas/Event'
  *                 message:
  *                   type: string
  *                   example: "Event updated successfully"
@@ -177,19 +144,19 @@ eventRouter.get("/events/:id", getEvent);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Error'
+ *               $ref: '#/components/schemas/Error'
  *       '500':
  *         description: Registration count exceeds capacity
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Error'
+ *               $ref: '#/components/schemas/Error'
  */
 eventRouter.put("/events/:id", validateRequest(postSchemas.update), updateEvent);
 
 /**
  * @openapi
- * /events/:id:
+ * /events/{id}:
  *   delete:
  *     summary: Delete an existing event
  *     tags: [Events]
@@ -211,16 +178,17 @@ eventRouter.put("/events/:id", validateRequest(postSchemas.update), updateEvent)
  *                   type: string
  *                   example: "success"
  *                 data:
- *                   type: null
+ *                   type: object
+ *                   nullable: true
  *                 message:
  *                   type: string
  *                   example: "Event deleted successfully"
  *       '500':
- *         description: Failed to retrieve the event
+ *         description: Failed to delete the event
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Error'
+ *               $ref: '#/components/schemas/Error'
  */
 eventRouter.delete("/events/:id", deleteEvent);
 

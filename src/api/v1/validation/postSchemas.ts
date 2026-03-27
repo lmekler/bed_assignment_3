@@ -34,16 +34,16 @@ import Joi from "joi";
  *           default: 0
  *           description: Must be a whole number that is less than or equal to the capacity
  *         status:
- *            type: string
- *            enum: ["active", "cancelled", "completed"]
- *            default: "active"
+ *           type: string
+ *           enum: ["active", "cancelled", "completed"]
+ *           default: "active"
  *         category:
- *            type: string
- *            enum: ["conference", "workshop", "meetup", "seminar", "general"]
+ *           type: string
+ *           enum: ["conference", "workshop", "meetup", "seminar", "general"]
  *         createdAt:
- *            type: string
- *            format: date-time
- *            example: "2026-05-01T10:00:00Z"
+ *           type: string
+ *           format: date-time
+ *           example: "2026-05-01T10:00:00Z"
  */
 export const postSchemas = 
 {
@@ -74,3 +74,17 @@ export const postSchemas =
         }),
     }
 };
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       required:
+ *         - error
+ *       properties:
+ *         error:
+ *           type: string
+ *           description: Error type or code, followed by a readable error message
+ */
