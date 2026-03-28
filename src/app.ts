@@ -1,12 +1,35 @@
 import express, { Express } from "express";
+import morgan from "morgan";
+import dotenv from "dotenv";
+import { getHelmetConfig } from "../config/helmetConfig";
+import cors from "cors";
+import { getCorsOptions } from "../config/corsConfig";
+import setupSwagger from "../config/swagger";
+
+// Load environment variables BEFORE your internal imports!
+dotenv.config();
+
+import eventRouter from "./api/v1/routes/eventRoutes";
 
 // Initialize Express application
 const app: Express = express();
 
-// Define a route
-app.get("/", (req, res) => {
-    res.send("Hello, World!");
-});
+app.use(express.json());
+
+// Apply configured helmet security
+app.use(getHelmetConfig());
+
+// Apply configused cors security
+app.use(cors(getCorsOptions()));
+
+// Route handler for events
+app.use("/api/v1", eventRouter);
+
+// Setup Swagger
+setupSwagger(app);
+
+// Integrate Morgan for HTTP request logging.
+app.use(morgan("combined"));
 
 app.get("/api/v1/health", (req, res) => {
     res.json({
